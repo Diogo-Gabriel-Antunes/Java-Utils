@@ -2,11 +2,16 @@ package org.acme.Util;
 
 
 import org.acme.Anotacao.Type;
+import org.acme.exceptions.ValidacaoException;
+import org.acme.models.Categoria;
 import org.acme.models.DTO.DTO;
+import org.acme.models.DTO.ProdutoDTO;
 import org.acme.models.Model;
+import org.acme.models.Produto;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 
 @ApplicationScoped
@@ -24,6 +29,7 @@ public class FieldUtil {
                 if (attribute.get(newObject) != null && attribute.getAnnotation(Type.class) == null) {
                     oldObject.getClass().getDeclaredMethod("set" + updateStringToGetorSet(attribute), attribute.getType()).invoke(oldObject, attribute.get(newObject));
                 }else if(attribute.getAnnotation(Type.class) != null && attribute.get(newObject) != null) {
+                    montaSubClasse(attribute.getAnnotation(Type.class).value(),attribute.get(newObject));
                     oldObject.getClass().getDeclaredMethod("set" + updateStringToGetorSet(attribute), attribute.getAnnotation(Type.class).value()).invoke(oldObject, (Object) null);
                 }else if(attribute.getAnnotation(Type.class) == null) {
                     oldObject.getClass().getDeclaredMethod("set" + updateStringToGetorSet(attribute), attribute.getType()).invoke(oldObject, (Object) null);
@@ -65,4 +71,21 @@ public class FieldUtil {
         return hashMap;
 
     }
+
+    private Object montaSubClasse(Class value, Object model) {
+        try{
+            Object declaredConstructor = value.getDeclaredConstructor().newInstance();
+            updateFieldsDtoToModel((Model) model, (DTO) declaredConstructor);
+            return declaredConstructor;
+        }catch (Throwable t){
+            t.printStackTrace();
+            ValidacaoException validacaoException = new ValidacaoException();
+            validacaoException.add("Erro no sistema, favor informar o suporte");
+            validacaoException.lancaErro();
+            return null;
+        }
+
+    }
+
+
 }
