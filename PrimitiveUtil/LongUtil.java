@@ -28,7 +28,7 @@ public class LongUtil {
     }
     public static Long parseFromFloat(Float num){
         try{
-            return Long.parseLong(String.valueOf(num));
+            return (long) Math.round(num);
         }catch (Throwable t){
             t.printStackTrace();
             ValidacaoException validacaoException = new ValidacaoException();
@@ -39,7 +39,7 @@ public class LongUtil {
     }
     public static Long parseFromDouble(Double num){
         try{
-            return Long.parseLong(String.valueOf(num));
+            return Math.round(num);
         }catch (Throwable t){
             t.printStackTrace();
             ValidacaoException validacaoException = new ValidacaoException();

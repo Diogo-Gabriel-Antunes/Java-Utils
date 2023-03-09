@@ -28,7 +28,7 @@ public class IntUtil {
     }
     public static Integer parseFromFloat(Float num){
         try{
-            return Integer.parseInt(String.valueOf(num));
+            return Math.round(num);
         }catch (Throwable t){
             t.printStackTrace();
             ValidacaoException validacaoException = new ValidacaoException();
@@ -39,7 +39,7 @@ public class IntUtil {
     }
     public static Integer parseFromDouble(Double num){
         try{
-            return Integer.parseInt(String.valueOf(num));
+            return Math.toIntExact(Math.round(num));
         }catch (Throwable t){
             t.printStackTrace();
             ValidacaoException validacaoException = new ValidacaoException();
